@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Interactions;
 using Fergun.Interactive;
 using FMBot.Bot.Attributes;
@@ -49,9 +50,11 @@ public class PlaySlashCommands : InteractionModuleBase
 
     [SlashCommand("fm", "Now Playing - Shows you or someone else their current track")]
     [UsernameSetRequired]
+    [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     public async Task NowPlayingAsync([Summary("user", "The user to show (defaults to self)")] string user = null)
     {
-        var existingFmCooldown = await this._guildService.GetChannelCooldown(this.Context.Channel.Id);
+        var existingFmCooldown = await this._guildService.GetChannelCooldown(this.Context.Channel?.Id);
         if (existingFmCooldown.HasValue)
         {
             if (StackCooldownTarget.Contains(this.Context.User.Id))
